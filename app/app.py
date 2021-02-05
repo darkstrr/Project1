@@ -24,6 +24,7 @@ def authentication():
     # request for authentication
     r = requests.post(token_url, data = token_data, headers=token_headers)
     #print(r.json())
+    
     #check for valid request
     valid_request = r.status_code in range(200, 299)
     #if request is valid, make a expiration checker
@@ -44,12 +45,18 @@ def get_random_song():
     Base_URL = f"https://api.spotify.com"
     version = f"v1"
     resource_type = "top-tracks?"
-    market = "market=ES"
+    market = "market=US"
     rand = random.randint(0, 2)
     #endpoint = f"{Base_URL}/{version}/artists/{artist_id[0]}/{resource_type}?offset=0&limit=10&include_groups=single&{market}"
     endpoint = f"{Base_URL}/{version}/artists/{artist_id[rand]}/{resource_type}{market}"
+    
+    #get authentication token
+    authy = authentication()
+    if not(authy):
+        print("authentication failed")
+    
     headers = {
-        "Authorization": f"Bearer {authentication()}"
+        "Authorization": f"Bearer {authy}"
     }
     
     #send request for top tracks
@@ -76,15 +83,19 @@ def get_random_song():
 
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 @app.route('/')
 def main():
     song_info = get_random_song()
     print(song_info)
-    """
     return render_template(
         "index.html",
         songs = song_info
     )
-    """
+    
 
-main()
+app.run(
+    host=os.getenv('IP', '0.0.0.0'),
+    port=int(os.getenv('PORT', 8080)),
+    debug=True
+)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{{ songs[0] }}</title>
+    <link rel="stylesheet" href={{ url_for( 'static', filename='style.css' ) }} />
+</head>
+
+<body>
+    <h1>{{ songs[0] }}</h1>
+    <div>
+        <div class='artist'>
+            <p><b>Sung By: {{songs[1]}}</b></p>
+        </div>
+        <div class='picture'>
+            <td>
+    			<img src={{ songs[3] }} alt={{ songs[0] }} height="300" width="300">
+    			</a>
+		    </td>
+        </div>
+        <div class='preview'>
+            <audio controls autoplay loop>
+                <source src={{songs[2]}} type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+
+</body>
+
+</html>
