@@ -8,25 +8,40 @@
 </head>
 
 <body>
-    <h1>{{ songs[0] }}</h1>
     <div>
-        <div class='artist'>
-            <p><b>Sung By: {{songs[1]}}</b></p>
-        </div>
-        <div class='picture'>
-            <td>
-    			<img src={{ songs[3] }} alt={{ songs[0] }} height="300" width="300">
-    			</a>
-		    </td>
-        </div>
-        <div class='preview'>
-            <audio controls autoplay loop id="song">
-                <source src={{songs[2]}} type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
+        <table style="width:100%">
+            <tbody>
+                <tr id = "trHeader">
+                    <th><h1>{{ songs[0] }}</h1></th>
+                    <th><h2>Sung By: {{ songs[1] }}</h2></th>
+                </tr>
+                <tr>
+                    <td>
+                        <img src={{ songs[3] }} alt={{ songs[0] }} height="300" width="300">
+    			        </a>
+                    </td>
+                    <td>
+                        <div class='lyrics'>
+                            {{ lyrics_info }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class='preview'>
+                            <audio controls autoplay loop id="song">
+                                <source src={{songs[2]}} type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    </td>
+                    <td>
+                        <a href={{ genius_url }}>Lyrics On Genius</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
 </body>
 
 </html>

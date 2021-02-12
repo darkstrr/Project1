@@ -5,9 +5,10 @@ import datetime
 import random
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template
+from bs4 import BeautifulSoup
 
-
-def authentication():
+genius_lyrics = "No Genius Lyrics Found"
+def spotify_authentication():
     #do a lookup for a token
     load_dotenv(find_dotenv())
     client_creds = f"{os.getenv('client_id')}:{os.getenv('client_secret')}"
@@ -39,6 +40,11 @@ def authentication():
     else:
         return ""
 
+def genius_authentication():
+    load_dotenv(find_dotenv())
+    token = f"{os.getenv('genius_token')}";
+    return token
+    
 def get_random_song():
     #artist test
     artist_id = ["0blbVefuxOGltDBa00dspv", "7BzEKSgHp2yrNC6w5NkFhQ", "7ucOhItVkxNqunNLo8AkzN"] #LiSA, Goosehouse, and FripSide
@@ -51,7 +57,7 @@ def get_random_song():
     endpoint = f"{Base_URL}/{version}/artists/{artist_id[rand]}/{resource_type}{market}"
     
     #get authentication token
-    authy = authentication()
+    authy = spotify_authentication()
     if not(authy):
         print("authentication failed")
     
@@ -71,15 +77,65 @@ def get_random_song():
     artist_name = tracks["tracks"][rand2]["artists"][0].get("name")
     track_image = tracks['tracks'][rand2].get("album").get("images")[0].get("url")
     
-    print(track_name)
-    print(artist_name)
-    print(track_preview)
-    print(track_image)
+    #print(track_name)
+    #print(artist_name)
+    #print(track_preview)
+    #print(track_image)
     
     #put song information into list
     song_info = [track_name, artist_name, track_preview, track_image]
     
     return song_info
+
+def get_lyrics(song_path):
+    base_url = "http://api.genius.com"
+    genius_auth = "Bearer " + genius_authentication()
+    headers = {'Authorization': genius_auth}
+    song_url = base_url + song_path
+    response = requests.get(song_url, headers=headers)
+    response = response.json()
+    path = response['response']['song']['path']
+    
+    #scrape lyrics from Genius website
+    page_url = "http://genius.com" + path
+    page = requests.get(page_url)
+    global genius_lyrics
+    genius_lyrics = page_url
+    
+    #get the HTML text of the song page
+    html = BeautifulSoup(page.text, "html.parser")
+    
+    #remove javascript tags in the middle of the lyrics
+    [h.extract() for h in html('script')]
+    lyrics = html.find("div", class_="lyrics").get_text()
+    return lyrics
+    
+    
+def genius_song_info(song_title, artist_name):
+    genius_auth = "Bearer " + genius_authentication()
+    headers = {'Authorization': genius_auth}
+    base_url = "http://api.genius.com"
+    search_url = base_url + "/search"
+    params = {'q': song_title}
+    song_info = "Not Found"
+    
+    #get genius info for song
+    response = requests.get(search_url, params=params, headers=headers)
+    genius_info = response.json()
+    song_info = None
+    for hit in genius_info['response']['hits']:
+        if hit['result']['primary_artist']['name'] == artist_name:
+            song_info = hit
+            print(song_info)
+            break
+    if song_info:
+        song_path = song_info["result"]["api_path"]
+        print(song_path)
+        lyrics = get_lyrics(song_path)
+        return(lyrics)
+    return ""
+
+#get lyrics
 
 
 app = Flask(__name__)
@@ -88,9 +144,19 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 def main():
     song_info = get_random_song()
     print(song_info)
+    
+    #get song info from the genius api (url to lyrics)
+    lyrics = genius_song_info(song_info[0], song_info[1])
+    
+    #check if no lyrics
+    if not lyrics:
+        lyrics = "no lyrics found"
+    
     return render_template(
         "index.html",
-        songs = song_info
+        songs = song_info,
+        lyrics_info = lyrics,
+        genius_url = genius_lyrics,
     )
     
 
