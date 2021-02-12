@@ -141,6 +141,7 @@ app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 @app.route('/')
 def main():
+    global genius_lyrics
     song_info = get_random_song()
     print(song_info)
     
