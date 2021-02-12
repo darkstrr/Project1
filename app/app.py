@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 from flask import Flask, render_template
 from bs4 import BeautifulSoup
 
-genius_lyrics = "No Genius Lyrics Found"
+genius_lyrics = ""
 def spotify_authentication():
     #do a lookup for a token
     load_dotenv(find_dotenv())
@@ -128,14 +128,13 @@ def genius_song_info(song_title, artist_name):
             song_info = hit
             print(song_info)
             break
+    #return lyrics if it exists
     if song_info:
         song_path = song_info["result"]["api_path"]
         print(song_path)
         lyrics = get_lyrics(song_path)
         return(lyrics)
     return ""
-
-#get lyrics
 
 
 app = Flask(__name__)
@@ -151,6 +150,7 @@ def main():
     #check if no lyrics
     if not lyrics:
         lyrics = "no lyrics found"
+        genius_lyrics = "https://genius.com/search?q=" + song_info[0]
     
     return render_template(
         "index.html",

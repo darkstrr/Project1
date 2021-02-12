@@ -1,9 +1,10 @@
 p {
-    font-family: "Alegreya", Arial, sans-serif;
+font-family: "Alegreya", Arial, sans-serif;
 }
 table {
 margin: 5px;
 width: 290px;
+text-align: center;
 }
 
 th {
@@ -16,16 +17,25 @@ padding-right: 8px;
 border: 1px solid #990000;
 background-color: #ffffcc;
 }
+img {
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
 
 #trHeader {
 text-decoration: underline;
 color: #990000;
 }
 .lyrics {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     white-space: pre-wrap;
     height: 300px;
     width: 300px;
     overflow: auto;
     border: 3px solid red;
     padding: 2%;
+    text-align: center;
 }
