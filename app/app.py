@@ -150,7 +150,8 @@ def main():
     #check if no lyrics
     if not lyrics:
         lyrics = "no lyrics found"
-        genius_lyrics = "https://genius.com/search?q=" + song_info[0]
+        temp = song_info[0].replace(" ", "%20")
+        genius_lyrics = "https://genius.com/search?q=" + temp
     
     return render_template(
         "index.html",
