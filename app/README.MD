@@ -1,6 +1,6 @@
 What to install:
-pip install beautifulsoup4
-pip install python-dotenv
+1. pip install beautifulsoup4
+2. pip install python-dotenv
 
 known problems:
 1. no error checking
