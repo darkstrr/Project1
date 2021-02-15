@@ -131,7 +131,6 @@ def genius_song_info(song_title, artist_name):
     #return lyrics if it exists
     if song_info:
         song_path = song_info["result"]["api_path"]
-        print(song_path)
         lyrics = get_lyrics(song_path)
         return(lyrics)
     return ""
@@ -143,7 +142,6 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 def main():
     global genius_lyrics
     song_info = get_random_song()
-    print(song_info)
     
     #get song info from the genius api (url to lyrics)
     lyrics = genius_song_info(song_info[0], song_info[1])
